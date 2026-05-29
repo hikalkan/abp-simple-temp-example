@@ -1,0 +1,49 @@
+{
+  "id": "51849d7e-ee44-47f0-ab84-09067987ad66",
+  "template": "app-nolayers",
+  "versions": {
+    "AbpFramework": "10.4.0",
+    "AbpStudio": "3.0.3",
+    "TargetDotnetFramework": "net10.0"
+  },
+  "modules": {
+    "AbpTempSimpleApp": {
+      "path": "AbpTempSimpleApp.abpmdl"
+    }
+  },
+  "runProfiles": {
+    "Default": {
+      "path": "etc/run-profiles/Default.abprun.json"
+    }
+  },
+  "options": {
+    "httpRequests": {
+      "ignoredUrls": [
+      
+      ]
+    }
+  },
+  "creatingStudioConfiguration": {
+    "template": "app-nolayers",
+    "createdAbpStudioVersion": "3.0.3",
+    "creationTool": "ABP Studio UI",
+    "multiTenancy": "false",
+    "runInstallLibs": "",
+    "useLocalReferences": "false",
+    "uiFramework": "mvc",
+    "databaseProvider": "ef",
+    "runDbMigrator": "",
+    "includeTests": "false",
+    "databaseManagementSystem": "sqlite",
+    "createInitialMigration": "",
+    "theme": "leptonx-lite",
+    "themeStyle": "",
+    "themeMenuPlacement": "",
+    "publicWebsite": "",
+    "socialLogin": "false",
+    "sampleCrudPage": "true",
+    "selectedLanguages": ["English", "Turkish", ],
+    "defaultLanguage": "English",
+    "createCommand": "abp new AbpTempSimpleApp -t app-nolayers --ui-framework mvc --mobile  --database-provider ef --database-management-system sqlite --theme leptonx-lite --skip-migration  --skip-migrator  --no-tests --without-cms-kit --sample-crud-page --dont-run-install-libs --dont-run-bundling --no-multi-tenancy --use-open-source-template"
+  }
+}

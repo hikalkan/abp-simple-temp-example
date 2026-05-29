@@ -1,0 +1,64 @@
+services:
+  abptempsimpleapp-web:
+    image: abptempsimpleapp:latest
+    container_name: abptempsimpleapp
+    build:
+      context: ../../
+      dockerfile: AbpTempSimpleApp/Dockerfile.local
+    environment:
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080;
+      - Kestrel__Certificates__Default__Path=/app/certs/localhost.pfx
+      - Kestrel__Certificates__Default__Password=91f91912-5ab0-49df-8166-23377efaf3cc
+      - App__HealthCheckUrl=http://abptempsimpleapp:8080/health-status
+      - ConnectionStrings__Default=DataSource=/data/AbpTempSimpleApp.db
+    ports:
+      - "44370:8081"
+    depends_on:
+      sqlite:
+        condition: service_healthy
+    restart: on-failure  
+    volumes:
+      - sqlite_data:/data
+      - ./certs:/app/certs
+    networks:
+      - abp-network  
+  
+  db-migrator:
+    image: abptempsimpleapp:latest
+    container_name: db-migrator
+    build:
+      context: ../../
+      dockerfile: AbpTempSimpleApp/Dockerfile.local
+    environment:
+      - ConnectionStrings__Default=DataSource=/data/AbpTempSimpleApp.db
+    command:
+      - --migrate-database
+    depends_on:
+      sqlite:
+        condition: service_healthy
+    volumes:
+      - sqlite_data:/data
+    networks:
+      - abp-network
+  sqlite:
+    container_name: sqlite-container
+    image: alpine:latest
+    command: sh -c "apk add sqlite && touch /data/AbpTempSimpleApp.db && sqlite3 /data/AbpTempSimpleApp.db '.databases' && tail -f /dev/null"
+    environment:
+      - TZ=UTC
+    volumes:
+      - sqlite_data:/data
+    networks:
+      - abp-network
+    healthcheck:
+      test: ["CMD-SHELL", "if [ -f /data/AbpTempSimpleApp.db ]; then exit 0; else exit 1; fi"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+volumes:
+  sqlite_data:
+    name: abptempsimpleapp_sqlite_data
+networks:
+  abp-network:
+    name: abptempsimpleapp-network
+    driver: bridge
