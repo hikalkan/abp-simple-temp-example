@@ -1,14 +1,12 @@
 {
-  // Taskever sandbox: clone → /home/user/workspace (repo root)
-  // Template must provide: .NET SDK 10, Node 20 LTS (npm 10 bundled), Volo.Abp.Studio.Cli.
-  // Do NOT run "rm .../npm" or corepack here — if corepack fails, npm is deleted and init breaks.
+  // Sandbox template: taskever-opencode-dotnet (NodeSource Node 24 + .NET 10 + ABP Studio CLI).
+  // See taskever repo docs/coding-abp-dotnet-preview.md — do NOT install Node/npm in init.
   "runtime": "dotnet",
 
   "init": [
     "dotnet restore AbpTempSimpleApp/AbpTempSimpleApp.csproj",
     "dotnet build AbpTempSimpleApp/AbpTempSimpleApp.csproj -v q --nologo",
-    "export PATH=/usr/local/bin:$PATH && npm --version",
-    "export PATH=/usr/local/bin:$PATH && npm install --prefix AbpTempSimpleApp --ignore-engines",
+    "npm install --prefix AbpTempSimpleApp",
     "abp install-libs --working-directory AbpTempSimpleApp",
     "ConnectionStrings__Default='Data Source=AbpTempSimpleApp.db' App__SelfUrl=http://127.0.0.1:8080 App__HealthCheckUrl=http://127.0.0.1:8080/health-status ASPNETCORE_URLS=http://0.0.0.0:8080 ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp --migrate-database --no-launch-profile --no-build"
   ],
