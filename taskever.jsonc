@@ -3,13 +3,15 @@
   "runtime": "dotnet",
 
   // Phase 3a — single-process preview (SQLite, no Docker)
-  // ConnectionStrings__Default: SQLite path is relative to process CWD (workspace root after cd)
+  // ASPNETCORE_URLS binds Kestrel on 8080 (must match "port" below). launchSettings.json uses 44370
+  // but --no-launch-profile ignores it; without ASPNETCORE_URLS dotnet defaults to ~5000.
   "init": [
     "dotnet restore AbpTempSimpleApp/AbpTempSimpleApp.csproj",
-    "ConnectionStrings__Default='Data Source=AbpTempSimpleApp.db' ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp --migrate-database --no-launch-profile"
+    "dotnet build AbpTempSimpleApp/AbpTempSimpleApp.csproj -v q --nologo",
+    "ConnectionStrings__Default='Data Source=AbpTempSimpleApp.db' App__SelfUrl=http://127.0.0.1:8080 ASPNETCORE_URLS=http://0.0.0.0:8080 ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp --migrate-database --no-launch-profile --no-build"
   ],
 
-  "run": "ConnectionStrings__Default='Data Source=AbpTempSimpleApp.db' ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp --no-build --urls http://0.0.0.0:8080 --no-launch-profile",
+  "run": "ConnectionStrings__Default='Data Source=AbpTempSimpleApp.db' App__SelfUrl=http://127.0.0.1:8080 ASPNETCORE_URLS=http://0.0.0.0:8080 ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp --no-build --no-launch-profile",
 
   "port": 8080,
 
