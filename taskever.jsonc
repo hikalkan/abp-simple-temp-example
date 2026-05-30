@@ -8,14 +8,15 @@
   "init": [
     "dotnet restore AbpTempSimpleApp/AbpTempSimpleApp.csproj",
     "dotnet build AbpTempSimpleApp/AbpTempSimpleApp.csproj -v q --nologo",
-    "ConnectionStrings__Default='Data Source=AbpTempSimpleApp.db' App__SelfUrl=http://127.0.0.1:8080 ASPNETCORE_URLS=http://0.0.0.0:8080 ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp --migrate-database --no-launch-profile --no-build"
+    "ConnectionStrings__Default='Data Source=AbpTempSimpleApp.db' App__SelfUrl=http://127.0.0.1:8080 App__HealthCheckUrl=http://127.0.0.1:8080/health-status ASPNETCORE_URLS=http://0.0.0.0:8080 ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp --migrate-database --no-launch-profile --no-build"
   ],
 
-  "run": "ConnectionStrings__Default='Data Source=AbpTempSimpleApp.db' App__SelfUrl=http://127.0.0.1:8080 ASPNETCORE_URLS=http://0.0.0.0:8080 ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp --no-build --no-launch-profile",
+  "run": "ConnectionStrings__Default='Data Source=AbpTempSimpleApp.db' App__SelfUrl=http://127.0.0.1:8080 App__HealthCheckUrl=http://127.0.0.1:8080/health-status ASPNETCORE_URLS=http://0.0.0.0:8080 ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp --no-build --no-launch-profile",
 
   "port": 8080,
 
-  // AbpTempSimpleApp maps health checks at /health-status (see appsettings.json)
+  // AbpTempSimpleApp maps health checks at /health-status (see appsettings.json).
+  // If migrate/DB is not ready yet, /health-status may return 503/500 while Kestrel is still up on "port".
   "healthcheck": "/health-status"
 
   // Phase 3b (Postgres via Docker) — uncomment when using a Docker-enabled sandbox template:

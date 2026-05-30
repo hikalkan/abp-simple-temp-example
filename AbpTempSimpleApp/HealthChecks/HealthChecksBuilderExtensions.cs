@@ -1,5 +1,6 @@
 ﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Volo.Abp;
 
 namespace AbpTempSimpleApp.HealthChecks;
 
@@ -12,18 +13,20 @@ public static class HealthChecksBuilderExtensions
         healthChecksBuilder.AddCheck<AbpTempSimpleAppDatabaseCheck>("AbpTempSimpleApp DbContext Check", tags: new string[] { "database" });
 
         var configuration = services.GetConfiguration();
-        var healthCheckUrl = configuration["App:HealthCheckUrl"];
+        var healthCheckPath = configuration["App:HealthCheckUrl"];
 
-        if (string.IsNullOrEmpty(healthCheckUrl))
+        if (string.IsNullOrWhiteSpace(healthCheckPath))
         {
-            healthCheckUrl = "/health-status";
+            healthCheckPath = "/health-status";
         }
-        
+
         services.ConfigureHealthCheckEndpoint("/health-status");
+
+        var healthCheckUiUri = ResolveHealthChecksUiUri(configuration, healthCheckPath);
 
         var healthChecksUiBuilder = services.AddHealthChecksUI(settings =>
         {
-            settings.AddHealthCheckEndpoint("AbpTempSimpleApp Health Status", healthCheckUrl);
+            settings.AddHealthCheckEndpoint("AbpTempSimpleApp Health Status", healthCheckUiUri);
         });
 
         // Set your HealthCheck UI Storage here
@@ -54,6 +57,27 @@ public static class HealthChecksBuilderExtensions
         });
 
         return services;
+    }
+
+    /// <summary>
+    /// HealthChecks UI polls this URL in a background worker. Relative paths are resolved against
+    /// <c>App:SelfUrl</c> so preview binds (0.0.0.0:8080) are not used as HTTP client targets.
+    /// </summary>
+    private static string ResolveHealthChecksUiUri(IConfiguration configuration, string healthCheckPath)
+    {
+        if (healthCheckPath.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
+            || healthCheckPath.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            return healthCheckPath;
+        }
+
+        var selfUrl = configuration["App:SelfUrl"]?.TrimEnd('/');
+        if (string.IsNullOrWhiteSpace(selfUrl))
+        {
+            return healthCheckPath.EnsureStartsWith('/');
+        }
+
+        return $"{selfUrl}{healthCheckPath.EnsureStartsWith('/')}";
     }
 
     private static IServiceCollection MapHealthChecksUiEndpoints(this IServiceCollection services, Action<global::HealthChecks.UI.Configuration.Options>? setupOption = null)
