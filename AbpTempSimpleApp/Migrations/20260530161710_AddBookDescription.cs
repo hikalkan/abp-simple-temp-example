@@ -1,14 +1,10 @@
-using AbpTempSimpleApp.Data;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace AbpTempSimpleApp.Migrations
 {
     /// <inheritdoc />
-    [DbContext(typeof(AbpTempSimpleAppDbContext))]
-    [Migration("20260530160737_AddBookDescription")]
     public partial class AddBookDescription : Migration
     {
         /// <inheritdoc />
