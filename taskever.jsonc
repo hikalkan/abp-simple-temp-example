@@ -1,15 +1,15 @@
 {
   // Taskever sandbox: clone → /home/user/workspace (repo root)
-  // Requires Opencode Dotnet template: .NET SDK, Node 24, Volo.Abp.Studio.Cli (`abp` on PATH).
+  // Requires Opencode Dotnet template: .NET SDK, Node 24, npm 10 (via corepack), Volo.Abp.Studio.Cli.
   "runtime": "dotnet",
 
   // Phase 3a — single-process preview (SQLite, no Docker)
-  // ASPNETCORE_URLS binds Kestrel on 8080 (must match "port" below). launchSettings.json uses 44370
-  // but --no-launch-profile ignores it; without ASPNETCORE_URLS dotnet defaults to ~5000.
+  // Node tarball ships npm 11.x which crashes (minipass-collect). Template must remove bundled npm
+  // and activate corepack npm@10; init repeats the fix if an older sandbox image is reused.
   "init": [
     "dotnet restore AbpTempSimpleApp/AbpTempSimpleApp.csproj",
     "dotnet build AbpTempSimpleApp/AbpTempSimpleApp.csproj -v q --nologo",
-    "corepack enable && corepack prepare npm@10.9.3 --activate",
+    "rm -rf /usr/local/lib/node_modules/npm && corepack enable && corepack prepare npm@10.9.3 --activate && npm --version",
     "npm install --prefix AbpTempSimpleApp",
     "abp install-libs --working-directory AbpTempSimpleApp",
     "ConnectionStrings__Default='Data Source=AbpTempSimpleApp.db' App__SelfUrl=http://127.0.0.1:8080 App__HealthCheckUrl=http://127.0.0.1:8080/health-status ASPNETCORE_URLS=http://0.0.0.0:8080 ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp --migrate-database --no-launch-profile --no-build"
@@ -19,16 +19,9 @@
 
   "port": 8080,
 
-  // AbpTempSimpleApp maps health checks at /health-status (see appsettings.json).
   "healthcheck": "/health-status"
 
   // Phase 3b (Postgres via Docker) — uncomment when using a Docker-enabled sandbox template:
-  // "compose": {
-  //   "file": "docker-compose.preview.yml",
-  //   "projectName": "taskever-preview",
-  //   "waitTimeoutSeconds": 120,
-  //   "requiredHealthy": ["postgres"]
-  // },
+  // "compose": { ... },
   // "env": ["ConnectionStrings__Default"]
-  // Set Coding:EnvCredentials:{ref} on the Taskever coding project for env values.
 }
