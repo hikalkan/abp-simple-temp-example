@@ -1,5 +1,6 @@
 {
   // Taskever sandbox: clone → /home/user/workspace (repo root)
+  // Requires Opencode Dotnet template: .NET SDK, Node 24, Volo.Abp.Studio.Cli (`abp` on PATH).
   "runtime": "dotnet",
 
   // Phase 3a — single-process preview (SQLite, no Docker)
@@ -8,6 +9,8 @@
   "init": [
     "dotnet restore AbpTempSimpleApp/AbpTempSimpleApp.csproj",
     "dotnet build AbpTempSimpleApp/AbpTempSimpleApp.csproj -v q --nologo",
+    "npm install --prefix AbpTempSimpleApp",
+    "abp install-libs --working-directory AbpTempSimpleApp",
     "ConnectionStrings__Default='Data Source=AbpTempSimpleApp.db' App__SelfUrl=http://127.0.0.1:8080 App__HealthCheckUrl=http://127.0.0.1:8080/health-status ASPNETCORE_URLS=http://0.0.0.0:8080 ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp --migrate-database --no-launch-profile --no-build"
   ],
 
@@ -16,7 +19,6 @@
   "port": 8080,
 
   // AbpTempSimpleApp maps health checks at /health-status (see appsettings.json).
-  // If migrate/DB is not ready yet, /health-status may return 503/500 while Kestrel is still up on "port".
   "healthcheck": "/health-status"
 
   // Phase 3b (Postgres via Docker) — uncomment when using a Docker-enabled sandbox template:
