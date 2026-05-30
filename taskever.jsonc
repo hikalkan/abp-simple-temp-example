@@ -9,6 +9,7 @@
   "init": [
     "dotnet restore AbpTempSimpleApp/AbpTempSimpleApp.csproj",
     "dotnet build AbpTempSimpleApp/AbpTempSimpleApp.csproj -v q --nologo",
+    "corepack enable && corepack prepare npm@10.9.3 --activate",
     "npm install --prefix AbpTempSimpleApp",
     "abp install-libs --working-directory AbpTempSimpleApp",
     "ConnectionStrings__Default='Data Source=AbpTempSimpleApp.db' App__SelfUrl=http://127.0.0.1:8080 App__HealthCheckUrl=http://127.0.0.1:8080/health-status ASPNETCORE_URLS=http://0.0.0.0:8080 ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp --migrate-database --no-launch-profile --no-build"
