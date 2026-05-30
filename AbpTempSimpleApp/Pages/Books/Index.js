@@ -47,6 +47,10 @@ $(function () {
                     data: "name"
                 },
                 {
+                    title: l('Description'),
+                    data: "description"
+                },
+                {
                     title: l('Type'),
                     data: "type",
                     render: function (data) {

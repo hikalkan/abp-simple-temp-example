@@ -46,9 +46,9 @@ public class AbpTempSimpleAppDbContext : AbpDbContext<AbpTempSimpleAppDbContext>
                 DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            b.Property(x => x.Description).HasMaxLength(512);
         });
         
         /* Configure your own entities here */
     }
 }
-
