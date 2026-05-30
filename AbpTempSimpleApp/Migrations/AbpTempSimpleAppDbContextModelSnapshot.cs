@@ -40,6 +40,10 @@ namespace AbpTempSimpleApp.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("CreatorId");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(1024)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
                         .HasColumnType("TEXT")
