@@ -7,9 +7,9 @@
     "dotnet run --project AbpTempSimpleApp --migrate-database --no-launch-profile"
   ],
 
-  "run": "ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp --urls http://0.0.0.0:8080 --no-launch-profile",
+  "run": "ASPNETCORE_ENVIRONMENT=Development dotnet run --project AbpTempSimpleApp/AbpTempSimpleApp.csproj --no-launch-profile -- --urls http://0.0.0.0:44370",
 
-  "port": 8080,
+  "port": 44370,
 
   // AbpTempSimpleApp maps health checks at /health-status (see appsettings.json)
   "healthcheck": "/health-status"
