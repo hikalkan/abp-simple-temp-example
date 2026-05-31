@@ -25,6 +25,7 @@ public class AbpTempSimpleAppDataSeederContributor
                 new Book
                 {
                     Name = "1984",
+                    Description = "A dystopian novel about totalitarian surveillance.",
                     Type = BookType.Dystopia,
                     PublishDate = new DateTime(1949, 6, 8),
                     Price = 19.84f
@@ -36,6 +37,7 @@ public class AbpTempSimpleAppDataSeederContributor
                 new Book
                 {
                     Name = "The Hitchhiker's Guide to the Galaxy",
+                    Description = "A comic science fiction adventure across the galaxy.",
                     Type = BookType.ScienceFiction,
                     PublishDate = new DateTime(1995, 9, 27),
                     Price = 42.0f
