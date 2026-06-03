@@ -24,7 +24,15 @@ services:
     command: dotnet run --no-build --no-launch-profile
     port: 8080
     primary: true
-    healthcheck: /health-status
+    # Only treat the app as ready when /health-status actually returns 200. A cold ABP host
+    # (15+ modules, first-run seeding, JIT) can return 503 while warming up and needs well over
+    # the default 120s on a constrained sandbox — accepting "any" status or timing out early would
+    # mark the preview "Running" before Kestrel truly serves on 8080.
+    healthcheck:
+      path: /health-status
+      expectStatus: "2xx"
+      timeoutSeconds: 300
+      intervalMs: 2000
     restartPolicy: on-change
     watchPaths:
       - AbpTempSimpleApp/**/*.cs
