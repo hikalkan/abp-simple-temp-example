@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.OpenApi;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -176,6 +177,7 @@ public class AbpTempSimpleAppModule : AbpModule
         }
 
         ConfigureStudio(hostingEnvironment);
+        ConfigureForwardedHeaders(configuration);
         ConfigureAuthentication(context);
         ConfigureMultiTenancy();
         ConfigureUrls(configuration);
@@ -210,6 +212,21 @@ public class AbpTempSimpleAppModule : AbpModule
                 options.IsLinkEnabled = false;
             });
         }
+    }
+
+    private void ConfigureForwardedHeaders(IConfiguration configuration)
+    {
+        if (!configuration.GetValue<bool>("App:UseForwardedHeaders"))
+        {
+            return;
+        }
+
+        Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.KnownIPNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
     }
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)
@@ -365,6 +382,12 @@ public class AbpTempSimpleAppModule : AbpModule
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+        }
+
+        var configuration = context.ServiceProvider.GetRequiredService<IConfiguration>();
+        if (configuration.GetValue<bool>("App:UseForwardedHeaders"))
+        {
+            app.UseForwardedHeaders();
         }
 
         app.UseAbpRequestLocalization();

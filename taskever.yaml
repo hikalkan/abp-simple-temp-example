@@ -38,6 +38,7 @@ services:
       ConnectionStrings__Default: Data Source=AbpTempSimpleApp.db
       App__SelfUrl: ${preview.url(app)}
       App__HealthCheckUrl: ${service.internalUrl(app)}/health-status
+      App__UseForwardedHeaders: "true"
       AuthServer__Authority: ${preview.url(app)}
       ASPNETCORE_URLS: http://0.0.0.0:8080
       ASPNETCORE_ENVIRONMENT: Development
