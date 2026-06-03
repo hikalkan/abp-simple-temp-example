@@ -10,6 +10,10 @@ public class CreateUpdateBookDto
     [StringLength(128)]
     public string Name { get; set; } = string.Empty;
 
+    [StringLength(1024)]
+    [DataType(DataType.MultilineText)]
+    public string? Description { get; set; }
+
     [Required]
     public BookType Type { get; set; } = BookType.Undefined;
 

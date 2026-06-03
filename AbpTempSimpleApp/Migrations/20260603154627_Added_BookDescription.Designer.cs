@@ -3,6 +3,7 @@ using System;
 using AbpTempSimpleApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -11,9 +12,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace AbpTempSimpleApp.Migrations
 {
     [DbContext(typeof(AbpTempSimpleAppDbContext))]
-    partial class AbpTempSimpleAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260603154627_Added_BookDescription")]
+    partial class Added_BookDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

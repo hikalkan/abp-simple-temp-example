@@ -4,6 +4,7 @@
     "AppName": "AbpTempSimpleApp",
     "Welcome_Title": "Hoşgeldiniz",
     "Welcome_Text": "Bu proje tek katmanlı ABP uygulamaları yapmak için bir başlangıç şablonudur.",
+    "Description": "Açıklama",
     "Menu:Home": "Ana sayfa"
   }
 }

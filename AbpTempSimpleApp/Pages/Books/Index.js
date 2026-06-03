@@ -47,6 +47,11 @@ $(function () {
                     data: "name"
                 },
                 {
+                    title: l('Description'),
+                    data: "description",
+                    render: $.fn.dataTable.render.text()
+                },
+                {
                     title: l('Type'),
                     data: "type",
                     render: function (data) {
