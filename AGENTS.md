@@ -30,7 +30,7 @@ dotnet ef migrations add Added_YourFeature
 ```
 
 - Apply locally: `dotnet ef database update`  
-  In Taskever preview, `taskever.jsonc` init runs `--migrate-database` on startup — do not duplicate that in feature work unless asked.
+  In Taskever preview, `taskever.yaml` init runs `--migrate-database` once before preview — do not duplicate that in feature work unless asked.
 - Always call `b.ConfigureByConvention()` on new entities in `OnModelCreating`.
 - Use table prefix `App` (`AbpTempSimpleAppDbContext.DbTablePrefix`).
 - Data access goes through `IRepository<T, Guid>` — **never** inject `AbpTempSimpleAppDbContext` into app services.
@@ -59,7 +59,7 @@ npm install --prefix AbpTempSimpleApp
 abp install-libs --working-directory AbpTempSimpleApp
 ```
 
-Do **not** install Node/npm inside `taskever.jsonc` init — the sandbox template already provides Node 24.
+Do **not** install Node/npm inside `taskever.yaml` init — the sandbox template already provides Node 24.
 
 ## Build & run
 
@@ -70,11 +70,15 @@ dotnet build AbpTempSimpleApp/AbpTempSimpleApp.csproj
 
 Local run uses SQLite (`ConnectionStrings:Default` in `appsettings.json`).
 
-## Taskever preview (`taskever.jsonc`)
+## Taskever preview (`taskever.yaml`)
 
-- Dev server must bind **`http://0.0.0.0:8080`** (not `localhost` only).
-- Set `App__SelfUrl=http://127.0.0.1:8080` and `App__HealthCheckUrl=…/health-status` so HealthChecks UI works behind the sandbox proxy.
-- Health endpoint: `/health-status`. Do not point HealthChecks UI at `0.0.0.0`.
+Single **command** service (`app`) on port **8080** — see repo root `taskever.yaml`.
+
+- Dev server binds **`http://0.0.0.0:8080`** via `ASPNETCORE_URLS` (required for E2B port routing).
+- `App__SelfUrl` / `AuthServer__Authority` use `${preview.url(app)}` (browser-facing OIDC and redirects).
+- `App__HealthCheckUrl` uses `${service.internalUrl(app)}/health-status` so HealthChecks UI polls loopback, not the public hostname.
+- Health endpoint for the supervisor: `/health-status`.
+- After C#/Razor changes, preview restarts automatically (`restartPolicy: on-change` + `watchPaths`).
 
 ## Scope & style
 

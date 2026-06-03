@@ -1,0 +1,47 @@
+# Taskever coding sandbox manifest (v2) — ABP single-layer MVC + SQLite.
+# Sandbox template: taskever-opencode-dotnet (.NET 10, Node 24, ABP CLI).
+# Do NOT install Node/dotnet/ABP in init — the template already provides them.
+
+version: 2
+
+image:
+  template: taskever-opencode-dotnet
+
+init:
+  - dotnet restore AbpTempSimpleApp/AbpTempSimpleApp.csproj
+  - dotnet build AbpTempSimpleApp/AbpTempSimpleApp.csproj -v q --nologo
+  - run: npm install
+    cwd: AbpTempSimpleApp
+  - run: abp install-libs
+    cwd: AbpTempSimpleApp
+  - run: dotnet run --migrate-database --no-launch-profile --no-build
+    cwd: AbpTempSimpleApp
+    env:
+      ConnectionStrings__Default: Data Source=AbpTempSimpleApp.db
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+      ASPNETCORE_ENVIRONMENT: Development
+
+services:
+  - name: app
+    kind: command
+    cwd: AbpTempSimpleApp
+    command: dotnet run --no-build --no-launch-profile
+    port: 8080
+    primary: true
+    healthcheck: /health-status
+    restartPolicy: on-change
+    watchPaths:
+      - AbpTempSimpleApp/**/*.cs
+      - AbpTempSimpleApp/Pages/**/*
+      - AbpTempSimpleApp/wwwroot/**/*
+    env:
+      ConnectionStrings__Default: Data Source=AbpTempSimpleApp.db
+      App__SelfUrl: ${preview.url(app)}
+      App__HealthCheckUrl: ${service.internalUrl(app)}/health-status
+      AuthServer__Authority: ${preview.url(app)}
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+      ASPNETCORE_ENVIRONMENT: Development
+
+completion:
+  pauseOn: manual
+  idleTimeoutMinutes: 30
