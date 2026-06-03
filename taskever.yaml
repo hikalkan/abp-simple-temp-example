@@ -1,11 +1,4 @@
-# Taskever coding sandbox manifest (v2) — ABP single-layer MVC + SQLite.
-# Sandbox template: taskever-opencode-dotnet (.NET 10, Node 24, ABP CLI).
-# Do NOT install Node/dotnet/ABP in init — the template already provides them.
-
-version: 2
-
-image:
-  template: taskever-opencode-dotnet
+version: 1
 
 init:
   - dotnet restore AbpTempSimpleApp/AbpTempSimpleApp.csproj
