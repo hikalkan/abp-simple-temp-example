@@ -10,7 +10,7 @@ image:
 init:
   - dotnet restore AbpTempSimpleApp/AbpTempSimpleApp.csproj
   - dotnet build AbpTempSimpleApp/AbpTempSimpleApp.csproj -v q --nologo
-  - run: npm install
+  - run: npm ci
     cwd: AbpTempSimpleApp
   - run: abp install-libs
     cwd: AbpTempSimpleApp
