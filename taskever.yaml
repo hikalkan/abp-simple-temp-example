@@ -33,7 +33,7 @@ services:
     healthcheck:
       path: /health-status
       expectStatus: "2xx"
-      timeoutSeconds: 240
+      timeoutSeconds: 300
       intervalMs: 2000
     restartPolicy: on-change
     watchPaths:
