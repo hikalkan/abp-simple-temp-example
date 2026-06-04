@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taskever.dev/schema/taskever.app.schema.json",
+  "title": "taskever app manifest",
+  "description": "Tek bir previewable app'i tanimlar. Dosya adi: taskever.app.yaml",
+  "type": "object",
+  "required": ["name"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "App kimligi; secim ve ${preview.url} adresleme icin. Workspace icinde unique olmali.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9._-]+$"
+    },
+    "init": {
+      "type": "array",
+      "description": "Servisler ayaga kalkmadan once calisan hazirlik adimlari.",
+      "items": { "$ref": "#/$defs/step" }
+    },
+    "services": {
+      "type": "array",
+      "description": "App'in calisan servisleri. En az bir servis primary olmali.",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/service" }
+    },
+    "completion": { "$ref": "#/$defs/completion" }
+  },
+  "$defs": {
+    "step": {
+      "description": "Bir init adimi: duz komut (string) veya yapilandirilmis bir adim.",
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        {
+          "type": "object",
+          "required": ["run"],
+          "additionalProperties": false,
+          "properties": {
+            "run": { "type": "string", "minLength": 1 },
+            "cwd": { "type": "string" },
+            "env": {
+              "type": "object",
+              "additionalProperties": { "type": "string" }
+            }
+          }
+        }
+      ]
+    },
+    "service": {
+      "type": "object",
+      "required": ["name", "kind"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "kind": {
+          "type": "string",
+          "description": "Servis turu.",
+          "enum": ["command", "container"]
+        },
+        "cwd": { "type": "string" },
+        "command": { "type": "string" },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "primary": { "type": "boolean" },
+        "healthcheck": { "$ref": "#/$defs/healthcheck" },
+        "restartPolicy": {
+          "type": "string",
+          "enum": ["never", "on-change", "always"]
+        },
+        "watchPaths": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "env": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "healthcheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": { "type": "string" },
+        "expectStatus": {
+          "type": "string",
+          "description": "Beklenen HTTP durum sinifi/kodu, orn. '2xx'."
+        },
+        "timeoutSeconds": { "type": "integer", "minimum": 1 },
+        "intervalMs": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "completion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pauseOn": {
+          "type": "string",
+          "enum": ["manual", "idle"]
+        },
+        "idleTimeoutMinutes": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}
