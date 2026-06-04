@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taskever.dev/schema/taskever.workspace.schema.json",
+  "title": "taskever workspace manifest",
+  "description": "Dis repo bagimliliklarini ve previewable app listesini tanimlar. Dosya adi: taskever.workspace.yaml. App tanimi icermez; app klasorlerine isaret eder.",
+  "type": "object",
+  "additionalProperties": false,
+  "anyOf": [
+    { "required": ["workspace"] },
+    { "required": ["dependencies"] }
+  ],
+  "properties": {
+    "dependencies": {
+      "type": "object",
+      "description": "Pasif: derleme icin diske klonlanacak dis repolar.",
+      "additionalProperties": false,
+      "properties": {
+        "repositories": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/repository" }
+        }
+      }
+    },
+    "workspace": {
+      "type": "object",
+      "description": "Aktif: previewable app'ler. Ayni anda biri calisir.",
+      "required": ["apps"],
+      "additionalProperties": false,
+      "properties": {
+        "primary": {
+          "type": "string",
+          "description": "Varsayilan secili app'in name'i. apps[] icindeki bir app'e isaret etmeli.",
+          "minLength": 1
+        },
+        "apps": {
+          "type": "array",
+          "description": "Her giris, icinde taskever.app.yaml barindiran bir klasore isaret eder.",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/appRef" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "repository": {
+      "type": "object",
+      "required": ["url", "path", "ref"],
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "Git repo URL'i.",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "description": "Repo kokune gore relative hedef konum (orn. ../abp -> kardes klasor).",
+          "minLength": 1
+        },
+        "ref": {
+          "type": "string",
+          "description": "ZORUNLU branch/tag/commit pin'i (reproducible derleme).",
+          "minLength": 1
+        }
+      }
+    },
+    "appRef": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Icinde taskever.app.yaml bulunan klasor (kok app icin '.').",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
