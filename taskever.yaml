@@ -28,10 +28,12 @@ services:
     # (15+ modules, first-run seeding, JIT) can return 503 while warming up and needs well over
     # the default 120s on a constrained sandbox — accepting "any" status or timing out early would
     # mark the preview "Running" before Kestrel truly serves on 8080.
+    # timeoutSeconds is the overall readiness window: keep it comfortably above the ~120s+ cold
+    # start so the first preview attempt succeeds without a manual "try again".
     healthcheck:
       path: /health-status
       expectStatus: "2xx"
-      timeoutSeconds: 30
+      timeoutSeconds: 300
       intervalMs: 2000
     restartPolicy: on-change
     watchPaths:
